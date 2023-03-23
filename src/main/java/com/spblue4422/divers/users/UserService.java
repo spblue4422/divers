@@ -2,17 +2,24 @@ package com.spblue4422.divers.users;
 
 import com.spblue4422.divers.Dto.auth.RegisterRequestDto;
 import com.spblue4422.divers.Dto.users.AddUserRequestDto;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+//    @Autowired
+//    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+//        this.userRepository = userRepository;
+//        this.passwordEncoder = passwordEncoder;
+//    }
 
     //userid 중복 확인
     public Boolean isUserIdExist(String userId) {
@@ -30,6 +37,7 @@ public class UserService {
     }
 
     public int insertUser(RegisterRequestDto req) {
+        String pw = req.getPassword();
         User newUser = userRepository.save(req.toEntity());
         //실패시 에러
         
