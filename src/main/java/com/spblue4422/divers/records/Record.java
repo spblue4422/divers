@@ -26,12 +26,13 @@ public class Record {
 
     @Column(name="address")
     private String address;
-
+/*
     @Column(name = "latitude")
     private int latitude;
 
     @Column(name = "longitude")
     private int longitude;
+ */
 
     @Column(name="diveAt")
     @NotNull()
@@ -72,11 +73,9 @@ public class Record {
     @Nullable()
     private Date deletedAt;
 
-    public Record(String place, String adrs, int ltt, int lnt, Date at, int time, int depth, int temp, int wTemp, int sight, int rating) {
+    public Record(String place, String adrs, Date at, int time, int depth, int temp, int wTemp, int sight, int rating) {
         this.placeName = place;
         this.address = adrs;
-        this.latitude = ltt;
-        this.longitude = lnt;
         this.diveAt = at;
         this.diveTime = time;
         this.depth = depth;

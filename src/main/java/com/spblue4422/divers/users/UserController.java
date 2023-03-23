@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -28,12 +28,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/add")
-    public BasicResponseDto addUser(@RequestBody AddUserRequestDto req) {
-        try {
-            return new BasicResponseDto(null, 200, "success");
-        } catch (Exception err) {
-            return new BasicResponseDto(null, 500, "success");
-        }
-    }
+//    @PostMapping("/add")
+//    public BasicResponseDto addUser(@RequestBody AddUserRequestDto req) {
+//        try {
+//            return new BasicResponseDto(null, 200, "success");
+//        } catch (Exception err) {
+//            return new BasicResponseDto(null, 500, "success");
+//        }
+//    }
 }
