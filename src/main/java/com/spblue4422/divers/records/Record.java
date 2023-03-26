@@ -1,18 +1,18 @@
 package com.spblue4422.divers.records;
 
-import jakarta.annotation.Nullable;
+import com.spblue4422.divers.common.entities.EntityDate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Date;
 
-@Getter()
-@Builder()
-@AllArgsConstructor()
-@NoArgsConstructor()
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name="TB_Record")
-public class Record {
+public class Record extends EntityDate {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -20,19 +20,14 @@ public class Record {
 
     //@ManyToOne()
 
-    @Column(name="place")
+    //@ManyToOne()
+
+    //@ManyToOne()
+    //@Column(name="")
+
+    @Column(name="buddy")
     @NotNull()
-    private String placeName;
-
-    @Column(name="address")
-    private String address;
-/*
-    @Column(name = "latitude")
-    private int latitude;
-
-    @Column(name = "longitude")
-    private int longitude;
- */
+    private String buddy;
 
     @Column(name="diveAt")
     @NotNull()
@@ -42,48 +37,59 @@ public class Record {
     @NotNull()
     private int diveTime;
 
-    @Column(name = "depth")
+    @Column(name = "maxDepth")
     @NotNull()
-    private int depth;
+    private int maxDepth;
 
-    @Column(name="temperature")
-    private int temperature;
+    @Column(name="avgDepth")
+    @NotNull()
+    private int avgDepth;
 
-    @Column(name="waterTemperature")
-    private int waterTemperature;
+    //날씨 - enum type으로 가면 될듯?
+    //@OneToOne
+    //@Column(name="weather")
 
-    @Column(name = "sight")
-    private int sight;
+    //수면온도
+    @Column(name="sTemperature")
+    private float sTemperature;
+
+    //수온
+    @Column(name="wTemperature")
+    private float wTemperature;
+
+    @Column(name="airDiveIn")
+    private int airDiveIn;
+
+    @Column(name="usedAir")
+    private int usedAir;
+
+    @Column(name = "visibility")
+    private float visibility;
+
+    //외에도 wave, tide, surge 등이 잇음
+    //enum type
+    //@Column(name="suit")
 
     @Column(name = "rating")
     @NotNull()
     private float rating;
 
-    /*
-    @Column(name= "isPlaceRated")
+    @Column(name="memo")
     @NotNull()
-    int isPlaceRated;
-    */
+    private String memo;
 
-    @Column(name = "createdAt")
-    @NotNull()
-    private Date createdAt;
-
-    @Column(name = "deletedAt")
-    @Nullable()
-    private Date deletedAt;
-
-    public Record(String place, String adrs, Date at, int time, int depth, int temp, int wTemp, int sight, int rating) {
-        this.placeName = place;
-        this.address = adrs;
+    public Record(Date at, int time, int maxD, int avgD, float sTemp, float wTemp, int airDiveIn, int usedAir, float vision, int rating, String memo) {
+        super();
         this.diveAt = at;
         this.diveTime = time;
-        this.depth = depth;
-        this.temperature = temp;
-        this.waterTemperature = wTemp;
-        this.sight = sight;
+        this.maxDepth = maxD;
+        this.avgDepth = avgD;
+        this.sTemperature = sTemp;
+        this.wTemperature = wTemp;
+        this.airDiveIn = airDiveIn;
+        this.usedAir = usedAir;
+        this.visibility = vision;
         this.rating = rating;
-        this.createdAt = new Date();
-        this.deletedAt = null;
+        this.memo = memo;
     }
 }

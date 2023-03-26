@@ -1,7 +1,6 @@
 package com.spblue4422.divers.users;
 
-import com.spblue4422.divers.Dto.BasicResponseDto;
-import com.spblue4422.divers.Dto.users.AddUserRequestDto;
+import com.spblue4422.divers.dto.BasicResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

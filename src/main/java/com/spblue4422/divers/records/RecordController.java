@@ -1,6 +1,7 @@
 package com.spblue4422.divers.records;
 
-import com.spblue4422.divers.Dto.BasicResponseDto;
+import com.spblue4422.divers.dto.BasicResponseDto;
+import com.spblue4422.divers.dto.records.AddRecordRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class RecordController {
     }
 
     @PostMapping("/add")
-    public BasicResponseDto addRecord() {
+    public BasicResponseDto addRecord(AddRecordRequestDto req) {
         try {
             return BasicResponseDto.makeRes(null, 200, "success");
         } catch(Exception ex) {

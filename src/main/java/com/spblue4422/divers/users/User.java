@@ -1,18 +1,19 @@
 package com.spblue4422.divers.users;
 
-import jakarta.annotation.Nullable;
+import com.spblue4422.divers.common.entities.EntityDate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
 @Getter
-@Builder
+@SuperBuilder
 @Entity(name="TB_User")
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User extends EntityDate {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -51,21 +52,20 @@ public class User {
     private String phoneNum;
     */
 
-    @Column(name = "createdAt")
-    @NotNull()
-    private Date createdAt;
+    @Column(name="accessToken")
+    private String accessToken;
 
-    @Column(name = "deletedAt")
-    @Nullable()
-    private Date deletedAt;
+    @Column(name="refreshToken")
+    private String refreshToken;
 
     public User(String userId, String password, String fName, String lName, String nickName) {
+        super();
         this.userId = userId;
         this.password = password;
         this.firstName = fName;
         this.lastName = lName;
         this.nickName = nickName;
-        this.createdAt = new Date();
-        this.deletedAt = null;
+        this.accessToken = null;
+        this.refreshToken = null;
     }
 }

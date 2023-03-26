@@ -1,4 +1,4 @@
-package com.spblue4422.divers.Dto;
+package com.spblue4422.divers.dto;
 
 import lombok.*;
 

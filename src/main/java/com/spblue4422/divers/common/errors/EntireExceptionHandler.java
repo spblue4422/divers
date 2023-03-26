@@ -1,9 +1,8 @@
-package com.spblue4422.divers.common.error;
+package com.spblue4422.divers.common.errors;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 //인터넷보고 따라 만들어봄.

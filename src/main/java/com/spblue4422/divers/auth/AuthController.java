@@ -1,12 +1,11 @@
 package com.spblue4422.divers.auth;
 
-import com.spblue4422.divers.Dto.BasicResponseDto;
-import com.spblue4422.divers.Dto.auth.LoginRequestDto;
-import com.spblue4422.divers.Dto.auth.RegisterRequestDto;
+import com.spblue4422.divers.dto.BasicResponseDto;
+import com.spblue4422.divers.dto.auth.LoginRequestDto;
+import com.spblue4422.divers.dto.auth.RegisterRequestDto;
 import com.spblue4422.divers.users.User;
 import com.spblue4422.divers.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,6 +24,9 @@ public class AuthController {
     @PostMapping("/login")
     public BasicResponseDto login(@RequestBody LoginRequestDto req) {
         try {
+            //반환을 어떻게 해야할까?
+            User resData = authService.login(req);
+
 
             return BasicResponseDto.makeRes(null, 200, "success");
         } catch(Exception ex) {
@@ -35,17 +37,17 @@ public class AuthController {
     @PostMapping("/register")
     public BasicResponseDto signUp(@RequestBody RegisterRequestDto req) {
         try {
-            if(userService.isUserIdExist(req.getUserId())) {
+            if(authService.isUserIdExist(req.getUserId())) {
                 return BasicResponseDto.makeRes(null, 300, "ID 중복");
             }
 
-            if(userService.isNickNameExist(req.getNickName())) {
+            if(authService.isNickNameExist(req.getNickName())) {
                 return BasicResponseDto.makeRes(null, 300, "닉네임 중복");
             }
 
-            int a = userService.insertUser(req);
+            User resData = authService.insertUser(req);
 
-            return BasicResponseDto.makeRes(null, 200, "success");
+            return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
             return BasicResponseDto.makeRes(null, 500, "fail");
         }

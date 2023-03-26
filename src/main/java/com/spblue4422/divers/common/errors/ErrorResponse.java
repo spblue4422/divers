@@ -1,4 +1,4 @@
-package com.spblue4422.divers.common.error;
+package com.spblue4422.divers.common.errors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
