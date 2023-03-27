@@ -1,8 +1,7 @@
 package com.spblue4422.divers.auth;
 
 import com.spblue4422.divers.dto.BasicResponseDto;
-import com.spblue4422.divers.dto.auth.LoginRequestDto;
-import com.spblue4422.divers.dto.auth.RegisterRequestDto;
+import com.spblue4422.divers.dto.auth.*;
 import com.spblue4422.divers.users.User;
 import com.spblue4422.divers.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,29 +12,29 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserService userService;
+    //private final UserService userService;
 
     @Autowired
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.userService = userService;
+        //this.userService = userService;
     }
 
     @PostMapping("/login")
     public BasicResponseDto login(@RequestBody LoginRequestDto req) {
         try {
             //반환을 어떻게 해야할까?
-            User resData = authService.login(req);
+            User resData = authService.authLogin(req);
 
 
-            return BasicResponseDto.makeRes(null, 200, "success");
+            return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
-            return BasicResponseDto.makeRes(null, 500, "Err");
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
         }
     }
 
     @PostMapping("/register")
-    public BasicResponseDto signUp(@RequestBody RegisterRequestDto req) {
+    public BasicResponseDto register(@RequestBody RegisterRequestDto req) {
         try {
             if(authService.isUserIdExist(req.getUserId())) {
                 return BasicResponseDto.makeRes(null, 300, "ID 중복");
@@ -45,11 +44,11 @@ public class AuthController {
                 return BasicResponseDto.makeRes(null, 300, "닉네임 중복");
             }
 
-            User resData = authService.insertUser(req);
+            User resData = authService.authRegister(req);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
-            return BasicResponseDto.makeRes(null, 500, "fail");
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
         }
     }
 }

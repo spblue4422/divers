@@ -1,7 +1,6 @@
 package com.spblue4422.divers.auth;
 
-import com.spblue4422.divers.dto.auth.LoginRequestDto;
-import com.spblue4422.divers.dto.auth.RegisterRequestDto;
+import com.spblue4422.divers.dto.auth.*;
 import com.spblue4422.divers.users.User;
 import com.spblue4422.divers.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class AuthService {
         return findUser != null;
     }
 
-    public User login(LoginRequestDto req) {
+    public User authLogin(LoginRequestDto req) {
         User userData = userRepository.findUserByUserIdAndDeletedAtNull(req.getUserId()).orElse(null);
         if(userData == null) {
             //잘못된 id
@@ -47,8 +46,17 @@ public class AuthService {
         return userData;
     }
 
-    public User insertUser(RegisterRequestDto req) {
-        return userRepository.save(req.toEntity());
+    public User authRegister(RegisterRequestDto req) {
+        RegisterRequestDto reqData = RegisterRequestDto.builder()
+                .userId(req.getUserId())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .firstName(req.getFirstName())
+                .lastName(req.getLastName())
+                .nickName(req.getNickName())
+                .build();
+
+
+        return userRepository.save(reqData.toEntity());
         //실패시 save에서 에러 throw
     }
 

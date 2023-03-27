@@ -8,7 +8,8 @@ import java.util.Date;
 
 @Getter
 @SuperBuilder
-public abstract class EntityDate {
+@MappedSuperclass
+public class EntityDate {
     @Column(name="createdAt")
     protected Date createdAt;
 

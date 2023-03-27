@@ -1,14 +1,17 @@
 package com.spblue4422.divers.records;
 
 import com.spblue4422.divers.common.entities.EntityDate;
+import com.spblue4422.divers.spots.Spot;
+import com.spblue4422.divers.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name="TB_Record")
@@ -18,13 +21,15 @@ public class Record extends EntityDate {
     @Column(name = "id")
     private Long id;
 
-    //@ManyToOne()
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name="id")
+    private User user;
 
-    //@ManyToOne()
+    @ManyToOne(targetEntity = Spot.class)
+    @JoinColumn(name="id")
+    private Spot spot;
 
-    //@ManyToOne()
-    //@Column(name="")
-
+    //후에 친구 기능이 추가된다면? 친구목록에서 buddy 찾기도 가능
     @Column(name="buddy")
     @NotNull()
     private String buddy;
@@ -78,18 +83,22 @@ public class Record extends EntityDate {
     @NotNull()
     private String memo;
 
-    public Record(Date at, int time, int maxD, int avgD, float sTemp, float wTemp, int airDiveIn, int usedAir, float vision, int rating, String memo) {
-        super();
-        this.diveAt = at;
-        this.diveTime = time;
-        this.maxDepth = maxD;
-        this.avgDepth = avgD;
-        this.sTemperature = sTemp;
-        this.wTemperature = wTemp;
-        this.airDiveIn = airDiveIn;
-        this.usedAir = usedAir;
-        this.visibility = vision;
-        this.rating = rating;
-        this.memo = memo;
-    }
+    @Column(name="isOpened")
+    private boolean isOpened;
+
+//    public Record(Date at, int time, int maxD, int avgD, float sTemp, float wTemp, int airDiveIn, int usedAir, float vision, int rating, String memo) {
+//        super();
+//        this.diveAt = at;
+//        this.diveTime = time;
+//        this.maxDepth = maxD;
+//        this.avgDepth = avgD;
+//        this.sTemperature = sTemp;
+//        this.wTemperature = wTemp;
+//        this.airDiveIn = airDiveIn;
+//        this.usedAir = usedAir;
+//        this.visibility = vision;
+//        this.rating = rating;
+//        this.memo = memo;
+//        this.isOpened = false;
+//    }
 }

@@ -5,10 +5,12 @@ import com.spblue4422.divers.dto.records.AddRecordRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/records")
 public class RecordController {
-    private RecordService recordService;
+    private final RecordService recordService;
 
     @Autowired
     public RecordController(RecordService recordService) {
@@ -16,8 +18,14 @@ public class RecordController {
     }
 
     @GetMapping("/my")
-    public int getAllRecords() {
-        return 0;
+    public BasicResponseDto getAllRecords(String userId) {
+        try {
+            List<Record> resData = recordService.getAllRecordsByUser(userId);
+
+            return BasicResponseDto.makeRes(resData, 200, "success");
+        } catch(Exception ex) {
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
+        }
     }
 
     @GetMapping("/:id")

@@ -1,13 +1,15 @@
 package com.spblue4422.divers.spots;
 
 import com.spblue4422.divers.common.entities.EntityDate;
+import com.spblue4422.divers.common.entities.Nation;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
-@Getter()
-@Builder()
+@Getter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name="TB_Spot")
@@ -17,10 +19,14 @@ public class Spot extends EntityDate {
     @Column(name="id")
     private Long id;
 
+    @ManyToOne(targetEntity = Nation.class)
+    @JoinColumn(name="id")
+    private Nation nation;
+
     @Column(name="name")
     private String name;
 
-    @Column(name="loation")
+    @Column(name="location")
     private String location;
 
     @Column(name="explanation")

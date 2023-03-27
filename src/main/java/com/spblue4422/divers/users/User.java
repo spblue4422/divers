@@ -11,6 +11,7 @@ import java.util.Date;
 @Getter
 @SuperBuilder
 @Entity(name="TB_User")
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends EntityDate {
@@ -52,9 +53,6 @@ public class User extends EntityDate {
     private String phoneNum;
     */
 
-    @Column(name="accessToken")
-    private String accessToken;
-
     @Column(name="refreshToken")
     private String refreshToken;
 
@@ -65,7 +63,6 @@ public class User extends EntityDate {
         this.firstName = fName;
         this.lastName = lName;
         this.nickName = nickName;
-        this.accessToken = null;
         this.refreshToken = null;
     }
 }
