@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @SuperBuilder
@@ -21,12 +22,12 @@ public class Record extends EntityDate {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name="user")
+    @ManyToOne()
+    @JoinColumn(name="record_user")
     private User user;
 
-    @ManyToOne(targetEntity = Spot.class)
-    @JoinColumn(name="spot")
+    @ManyToOne()
+    @JoinColumn(name="record_spot")
     private Spot spot;
 
     @Column(name="logNo")
@@ -88,7 +89,11 @@ public class Record extends EntityDate {
     private String memo;
 
     @Column(name="opened")
-    private boolean opened;
+    private Boolean opened;
+
+    @OneToMany(mappedBy = "RecordPhoto", cascade = CascadeType.ALL)
+    private List<RecordPhoto> recordPhotoList;
+
 
 //    public Record(Date at, int time, int maxD, int avgD, float sTemp, float wTemp, int airDiveIn, int usedAir, float vision, int rating, String memo) {
 //        super();

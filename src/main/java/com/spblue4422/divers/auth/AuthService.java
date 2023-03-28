@@ -30,7 +30,7 @@ public class AuthService {
     }
 
     public User authLogin(LoginRequestDto req) {
-        User userData = userRepository.findUserByUserIdAndDeletedAtNull(req.getUserId()).orElse(null);
+        User userData = userRepository.findUserByUserIdAndDeletedAtIsNull(req.getUserId()).orElse(null);
         if(userData == null) {
             //잘못된 id
             return null;
@@ -55,9 +55,7 @@ public class AuthService {
                 .nickName(req.getNickName())
                 .build();
 
-
         return userRepository.save(reqData.toEntity());
-        //실패시 save에서 에러 throw
     }
 
     public int deleteUser(Long id, String userId, String password) {

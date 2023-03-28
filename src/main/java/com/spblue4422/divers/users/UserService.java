@@ -20,7 +20,7 @@ public class UserService {
     }
 
     public UserInfoBriefResponseDto getUserInfo(String userId, String type) {
-        User userData = userRepository.findUserByUserIdAndDeletedAtNull(userId)
+        User userData = userRepository.findUserByUserIdAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new BadRequestException(400, "존재하지 않는 ID입니다."));
 
         if(type.equals("detail")) {
@@ -43,8 +43,8 @@ public class UserService {
     }
 
     //굳이 아래처럼 따로 method를 만들지 않아도 될듯?
-    public UserInfoBriefResponseDto getUserInfoBrief(String userId) {
-        User userData = userRepository.findUserByUserIdAndDeletedAtNull(userId)
+/*    public UserInfoBriefResponseDto getUserInfoBrief(String userId) {
+        User userData = userRepository.findUserByUserIdAndDeletedAtIsNull(userId)
                 .orElseThrow(()-> new BadRequestException(400, "존재하지 않는 ID입니다."));
         if(userData == null) {
             return null;
@@ -58,7 +58,7 @@ public class UserService {
     }
 
     public UserInfoDetailResponseDto getUserInfoDetail(String userId) {
-        User userData = userRepository.findUserByUserIdAndDeletedAtNull(userId)
+        User userData = userRepository.findUserByUserIdAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new BadRequestException(400, "존재하지 않는 ID입니다."));
 
         return UserInfoDetailResponseDto.builder()
@@ -68,5 +68,5 @@ public class UserService {
                 .firstName(userData.getFirstName())
                 .lastName(userData.getLastName())
                 .build();
-    }
+    }*/
 }

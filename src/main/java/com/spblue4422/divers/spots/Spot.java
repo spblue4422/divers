@@ -19,8 +19,8 @@ public class Spot extends EntityDate {
     @Column(name="id")
     private Long id;
 
-    @ManyToOne(targetEntity = Nation.class)
-    @JoinColumn(name="nation")
+    @ManyToOne()
+    @JoinColumn(name="spot_nation")
     private Nation nation;
 
     @Column(name="name")

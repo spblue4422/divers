@@ -21,7 +21,7 @@ public class RecordController {
     @GetMapping("/my")
     public BasicResponseDto getMyAllRecords(String userId) {
         try {
-            List<RecordListItemResponseDto> resData = recordService.getAllRecordsByUser(userId, true);
+            List<RecordListItemResponseDto> resData = recordService.getRecordInfoListByUser(userId, true);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -32,7 +32,7 @@ public class RecordController {
     @GetMapping("/:userId")
     public BasicResponseDto getOthersAllRecords(String userId) {
         try {
-            List<RecordListItemResponseDto> resData = recordService.getAllRecordsByUser(userId, false);
+            List<RecordListItemResponseDto> resData = recordService.getRecordInfoListByUser(userId, false);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
