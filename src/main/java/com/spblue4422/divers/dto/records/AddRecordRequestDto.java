@@ -1,6 +1,8 @@
 package com.spblue4422.divers.dto.records;
 import com.spblue4422.divers.records.Record;
 
+import com.spblue4422.divers.spots.Spot;
+import com.spblue4422.divers.users.User;
 import lombok.*;
 import java.util.Date;
 
@@ -9,6 +11,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddRecordRequestDto {
+    private String userId;
+    private Long spotId;
     private String buddy;
     private Date diveAt;
     private int diveTime;
@@ -21,9 +25,13 @@ public class AddRecordRequestDto {
     private float visibility;
     private float rating;
     private String memo;
+    private Boolean opened;
 
-    public Record toEntity() {
+    public Record toEntity(User userData, Spot spotData, int log) {
         return Record.builder()
+                .user(userData)
+                .spot(spotData)
+                .logNo(log)
                 .buddy(buddy)
                 .diveAt(diveAt)
                 .diveTime(diveTime)
@@ -36,7 +44,7 @@ public class AddRecordRequestDto {
                 .visibility(visibility)
                 .rating(rating)
                 .memo(memo)
+                .opened(opened)
                 .build();
     }
-
 }

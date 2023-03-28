@@ -18,6 +18,6 @@ public class Nation {
     @Column(name="name")
     private String name;
 
-    @Column(name="code")
+    @Column(name="nationCode")
     private String nationCode;
 }

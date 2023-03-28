@@ -22,12 +22,16 @@ public class Record extends EntityDate {
     private Long id;
 
     @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name="id")
+    @JoinColumn(name="user")
     private User user;
 
     @ManyToOne(targetEntity = Spot.class)
-    @JoinColumn(name="id")
+    @JoinColumn(name="spot")
     private Spot spot;
+
+    @Column(name="logNo")
+    @NotNull()
+    private int logNo;
 
     //후에 친구 기능이 추가된다면? 친구목록에서 buddy 찾기도 가능
     @Column(name="buddy")
@@ -83,8 +87,8 @@ public class Record extends EntityDate {
     @NotNull()
     private String memo;
 
-    @Column(name="isOpened")
-    private boolean isOpened;
+    @Column(name="opened")
+    private boolean opened;
 
 //    public Record(Date at, int time, int maxD, int avgD, float sTemp, float wTemp, int airDiveIn, int usedAir, float vision, int rating, String memo) {
 //        super();

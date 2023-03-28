@@ -20,7 +20,7 @@ public class Spot extends EntityDate {
     private Long id;
 
     @ManyToOne(targetEntity = Nation.class)
-    @JoinColumn(name="id")
+    @JoinColumn(name="nation")
     private Nation nation;
 
     @Column(name="name")
@@ -32,14 +32,10 @@ public class Spot extends EntityDate {
     @Column(name="explanation")
     private String explanation;
 
-    @Column(name="rating")
-    private float rating;
-
-    public Spot(String name, String location, String explanation, float rating) {
+    public Spot(String name, String location, String explanation) {
         this.name = name;
         this.location = location;
         this.explanation = explanation;
-        this.rating = rating;
         this.createdAt = new Date();
         this.deletedAt = null;
     }
