@@ -5,7 +5,9 @@ import com.spblue4422.divers.dto.records.AddRecordRequestDto;
 import com.spblue4422.divers.dto.records.RecordListItemResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,9 +21,9 @@ public class RecordController {
     }
 
     @GetMapping("/my")
-    public BasicResponseDto getMyAllRecords(String userId) {
+    public BasicResponseDto getMyAllRecords(String loginId) {
         try {
-            List<RecordListItemResponseDto> resData = recordService.getRecordInfoListByUser(userId, true);
+            List<RecordListItemResponseDto> resData = null;//recordService.getRecordInfoListByUser(loginId, true);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -29,10 +31,10 @@ public class RecordController {
         }
     }
 
-    @GetMapping("/:userId")
-    public BasicResponseDto getOthersAllRecords(String userId) {
+    @GetMapping("/list/:loginId")
+    public BasicResponseDto getOthersAllRecords(String loginId) {
         try {
-            List<RecordListItemResponseDto> resData = recordService.getRecordInfoListByUser(userId, false);
+            List<RecordListItemResponseDto> resData = null;//recordService.getRecordInfoListByUser(loginId, false);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -40,17 +42,19 @@ public class RecordController {
         }
     }
 
-    @GetMapping("/:id")
+    @GetMapping("/:recordId")
     public int getRecordDetail() {
         return 0;
     }
 
     @PostMapping("/add")
-    public BasicResponseDto addRecord(AddRecordRequestDto req) {
+    public BasicResponseDto addRecord(@RequestPart(value="recordData") AddRecordRequestDto req, @RequestPart(value="images") List<MultipartFile> images) {
         try {
-            return BasicResponseDto.makeRes(null, 200, "success");
+            Record resData = recordService.insertRecord(req, images);
+
+            return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
-            return BasicResponseDto.makeRes(null, 500, "fail");
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
         }
     }
 }

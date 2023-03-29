@@ -11,18 +11,17 @@ import java.util.Date;
 @Getter
 @SuperBuilder
 @Entity(name="TB_User")
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends EntityDate {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Column(name = "userId")
+    private Long userId;
+
+    @Column(name = "loginId")
     @NotNull()
-    private String userId;
+    private String loginId;
 
     @Column(name = "password")
     @NotNull()
@@ -56,9 +55,9 @@ public class User extends EntityDate {
     @Column(name="refreshToken")
     private String refreshToken;
 
-    public User(String userId, String password, String fName, String lName, String nickName) {
+    public User(String loginId, String password, String fName, String lName, String nickName) {
         super();
-        this.userId = userId;
+        this.loginId = loginId;
         this.password = password;
         this.firstName = fName;
         this.lastName = lName;

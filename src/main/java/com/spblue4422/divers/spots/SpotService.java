@@ -13,8 +13,8 @@ public class SpotService {
 		this.spotRepository = spotRepository;
 	}
 
-	public Spot getSpotInfo(Long id) {
-		return spotRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(()-> new BadRequestException(400, "잘못된 ID입니다."));
+	public Spot getSpotInfo(Long spotId) {
+		return spotRepository.findBySpotIdAndDeletedAtIsNull(spotId	).orElseThrow(()-> new BadRequestException(400, "잘못된 ID입니다."));
 	}
 
 	public List<Spot> getSpotInfoList() {

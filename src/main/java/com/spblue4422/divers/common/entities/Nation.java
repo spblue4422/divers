@@ -12,8 +12,8 @@ import lombok.*;
 public class Nation {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "nationId")
+    private Long nationId;
 
     @Column(name="name")
     private String name;

@@ -19,22 +19,22 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserInfoBriefResponseDto getUserInfo(String userId, String type) {
-        User userData = userRepository.findUserByUserIdAndDeletedAtIsNull(userId)
+    public UserInfoBriefResponseDto getUserInfo(String loginId, String type) {
+        User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(loginId)
                 .orElseThrow(() -> new BadRequestException(400, "존재하지 않는 ID입니다."));
 
         if(type.equals("detail")) {
             return UserInfoDetailResponseDto.builder()
-                    .id(userData.getId())
                     .userId(userData.getUserId())
+                    .loginId(userData.getLoginId())
                     .nickName(userData.getNickName())
                     .firstName(userData.getFirstName())
                     .lastName(userData.getLastName())
                     .build();
         } else if(type.equals("brief")) {
             return UserInfoBriefResponseDto.builder()
-                    .id(userData.getId())
                     .userId(userData.getUserId())
+                    .loginId(userData.getLoginId())
                     .nickName(userData.getNickName())
                     .build();
         } else {

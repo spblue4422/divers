@@ -11,10 +11,14 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecordListItemResponseDto {
-    private Long id;
-    private User user;
-    private Spot spot;
-    private int logNo;
+    private Long recordId;
+    private Long userId;
+    private Long spotId;
+    private String loginId;
+    private String nickName;
+    private String spotName;
+    private String location;
+    private Integer logNo;
     private Date diveAt;
     private Date createdAt;
 }

@@ -20,7 +20,7 @@ public class RegisterRequestDto extends LoginRequestDto {
 
     public User toEntity() {
         return User.builder()
-                .userId(userId)
+                .loginId(loginId)
                 .password(password)
                 .firstName(firstName)
                 .lastName(lastName)

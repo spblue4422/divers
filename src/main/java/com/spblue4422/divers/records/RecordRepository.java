@@ -10,25 +10,19 @@ import java.util.Optional;
 
 @Repository
 public interface RecordRepository extends JpaRepository<Record, Long> {
-	@Query(value = "select r.id, r.logNo, r.diveAt, r.createdAt, u.id, u.userId, u.nickName, s.id," +
-			" s.name, s.location from TB_Record r left join r.user u left join r.spot s where r" +
-			".opened = true r.deletedAt = null", nativeQuery = true)
-	Optional<List<RecordListItemResponseDto>> findAllRecords();
+//	@Query(value = "", nativeQuery = true)
+//	Optional<List<RecordListItemResponseDto>> findAllRecords();
 
-	@Query(value = "select r.id, r.logNo, r.diveAt, r.createdAt, u.id, u.userId, u.nickName, s.id,"
-			+ " s.name, s.location from TB_Record r left join r.user u left join r.spot s where"
-			+ " u.userId = :userId and r.deletedAt = null", nativeQuery = true)
-	Optional<List<RecordListItemResponseDto>> findMyRecords(String userId);
+//	Class-based projections do not work with native queries AT ALL. As a workaround you may use named queries with ResultSetMapping or the Hibernate specific ResultTransformer.
+	@Query(value="select r.recordId as recordId, u.userId as userId, s.spotId as spotId, u.loginId as loginId, u.nickName as nickName, s.name as spotName, s.location as location, r.logNo as logNo, r.diveAt as diveAt, r.createdAt as createdAt"
+			+ " from tb_record r left join tb_user u on r.record_user = u.userId left join tb_spot s on r.record_spot = s.spotId where u.loginId=:loginId and r.deletedAt is null", nativeQuery = true)
+	Optional<List<RecordListItemResponseDto>> findMyRecords(String loginId);
 
-	@Query(value = "select r.id, r.logNo, r.diveAt, r.createdAt, u.id, u.userId, u.nickName, s.id,"
-			+ " s.name, s.location from TB_Record r left join r.user u left join r.spot s where u"
-			+ ".userId = :userId and r.opened = true and r.deletedAt = null", nativeQuery = true)
-	Optional<List<RecordListItemResponseDto>> findOthersRecords(String userId);
+//	@Query(value = "", nativeQuery = true)
+//	Optional<List<RecordListItemResponseDto>> findOthersRecords(String loginId);
 
-	@Query(value = "select r.*, u.id, u.userId, u.nickName, s.id, s.name, s.location from " +
-			"TB_Record r left join r.user u left join r.spot s where r.id = :id r.deletedAt = " +
-			"null", nativeQuery = true)
-	Optional<Record> findRecordDetail(Long id);
+//	@Query(value = "", nativeQuery = true)
+//	Optional<Record> findRecordDetail(Long recordId);
 
 //	@Query(value = "select r.*, u.id, u.userId, u.nickName, s.id, s.name, s.location from " +
 //			"TB_Record r left join r.user u left join r.spot s where r.id = :id r.deletedAt = " +

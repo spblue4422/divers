@@ -36,7 +36,7 @@ public class AuthController {
     @PostMapping("/register")
     public BasicResponseDto register(@RequestBody RegisterRequestDto req) {
         try {
-            if(authService.isUserIdExist(req.getUserId())) {
+            if(authService.isLoginIdExist(req.getLoginId())) {
                 return BasicResponseDto.makeRes(null, 300, "ID 중복");
             }
 

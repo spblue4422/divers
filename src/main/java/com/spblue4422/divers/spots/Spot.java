@@ -16,8 +16,8 @@ import java.util.Date;
 public class Spot extends EntityDate {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long id;
+    @Column(name="spotId")
+    private Long spotId;
 
     @ManyToOne()
     @JoinColumn(name="spot_nation")

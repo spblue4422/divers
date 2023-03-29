@@ -8,6 +8,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequestDto {
-    protected String userId;
+    protected String loginId;
     protected String password;
 }

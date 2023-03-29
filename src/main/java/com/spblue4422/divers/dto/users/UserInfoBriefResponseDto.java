@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfoBriefResponseDto {
-    private Long id;
-    private String userId;
+    private Long userId;
+    private String loginId;
     private String nickName;
 }

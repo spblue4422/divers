@@ -1,5 +1,7 @@
 package com.spblue4422.divers.records;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.spblue4422.divers.common.entities.EntityDate;
 import com.spblue4422.divers.spots.Spot;
 import com.spblue4422.divers.users.User;
@@ -19,8 +21,8 @@ import java.util.List;
 public class Record extends EntityDate {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "recordId")
+    private Long recordId;
 
     @ManyToOne()
     @JoinColumn(name="record_user")
@@ -32,7 +34,7 @@ public class Record extends EntityDate {
 
     @Column(name="logNo")
     @NotNull()
-    private int logNo;
+    private Integer logNo;
 
     //후에 친구 기능이 추가된다면? 친구목록에서 buddy 찾기도 가능
     @Column(name="buddy")
@@ -45,15 +47,15 @@ public class Record extends EntityDate {
 
     @Column(name="diveTime")
     @NotNull()
-    private int diveTime;
+    private Integer diveTime;
 
     @Column(name = "maxDepth")
     @NotNull()
-    private int maxDepth;
+    private Integer maxDepth;
 
     @Column(name="avgDepth")
     @NotNull()
-    private int avgDepth;
+    private Integer avgDepth;
 
     //날씨 - enum type으로 가면 될듯?
     //@OneToOne
@@ -61,20 +63,20 @@ public class Record extends EntityDate {
 
     //수면온도
     @Column(name="sTemperature")
-    private float sTemperature;
+    private Float sTemperature;
 
     //수온
     @Column(name="wTemperature")
-    private float wTemperature;
+    private Float wTemperature;
 
     @Column(name="airDiveIn")
-    private int airDiveIn;
+    private Integer airDiveIn;
 
     @Column(name="usedAir")
-    private int usedAir;
+    private Integer usedAir;
 
     @Column(name = "visibility")
-    private float visibility;
+    private Float visibility;
 
     //외에도 wave, tide, surge 등이 잇음
     //enum type
@@ -82,7 +84,7 @@ public class Record extends EntityDate {
 
     @Column(name = "rating")
     @NotNull()
-    private float rating;
+    private Float rating;
 
     @Column(name="memo")
     @NotNull()
@@ -91,7 +93,7 @@ public class Record extends EntityDate {
     @Column(name="opened")
     private Boolean opened;
 
-    @OneToMany(mappedBy = "RecordPhoto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
     private List<RecordPhoto> recordPhotoList;
 
 

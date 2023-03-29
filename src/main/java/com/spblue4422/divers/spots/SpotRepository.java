@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface SpotRepository extends JpaRepository<Spot, Long> {
-	Optional<Spot> findByIdAndDeletedAtIsNull(Long id);
+	Optional<Spot> findBySpotIdAndDeletedAtIsNull(Long spotId);
 
 	Optional<List<Spot>> findAllByDeletedAtIsNull();
 }

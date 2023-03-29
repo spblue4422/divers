@@ -20,10 +20,10 @@ public class UserController {
 
     // 원래 같으면 userId를 패러미터로 받지않고 토큰으로 받아와야함.
     @GetMapping("/my")
-    public BasicResponseDto getMyInfo(String userId) {
+    public BasicResponseDto getMyInfo(String loginId) {
         try {
             //UserInfoDetailResponseDto userData = userService.getUserInfoDetail(userId);
-            UserInfoBriefResponseDto userData = userService.getUserInfo(userId, "detail");
+            UserInfoBriefResponseDto userData = userService.getUserInfo(loginId, "detail");
 
             return BasicResponseDto.makeRes(userData, 200, "success");
         } catch(Exception ex) {
@@ -32,9 +32,9 @@ public class UserController {
     }
 
     @GetMapping("/info/:userId")
-    public BasicResponseDto getUserInfo(@RequestParam("userId") String userId) {
+    public BasicResponseDto getUserInfo(@RequestParam("loginId") String loginId) {
         try {
-            UserInfoBriefResponseDto userData = userService.getUserInfo(userId, "brief");
+            UserInfoBriefResponseDto userData = userService.getUserInfo(loginId, "brief");
 
             return BasicResponseDto.makeRes(userData, 200, "success");
         } catch(Exception ex) {

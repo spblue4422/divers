@@ -19,18 +19,18 @@ public class AuthService {
     }
 
     //userid 중복 확인
-    public Boolean isUserIdExist(String userId) {
-        User findUser = userRepository.findUserByUserId(userId).orElse(null);
-        return findUser != null;
+    public Boolean isLoginIdExist(String loginId) {
+        User userData = userRepository.findUserByLoginId(loginId).orElse(null);
+        return userData != null;
     }
 
     public Boolean isNickNameExist(String nickName) {
-        User findUser = userRepository.findUserByNickName(nickName).orElse(null);
-        return findUser != null;
+        User userData = userRepository.findUserByNickName(nickName).orElse(null);
+        return userData != null;
     }
 
     public User authLogin(LoginRequestDto req) {
-        User userData = userRepository.findUserByUserIdAndDeletedAtIsNull(req.getUserId()).orElse(null);
+        User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(req.getLoginId()).orElse(null);
         if(userData == null) {
             //잘못된 id
             return null;
@@ -48,7 +48,7 @@ public class AuthService {
 
     public User authRegister(RegisterRequestDto req) {
         RegisterRequestDto reqData = RegisterRequestDto.builder()
-                .userId(req.getUserId())
+                .loginId(req.getLoginId())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .firstName(req.getFirstName())
                 .lastName(req.getLastName())
