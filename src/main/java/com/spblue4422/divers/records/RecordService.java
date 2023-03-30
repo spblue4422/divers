@@ -71,41 +71,29 @@ public class RecordService {
 		int count = recordRepository.findRecordsByLoginId(loginId).orElseThrow(() -> new BadRequestException(400, "ID 없음")).size() + 1;
 
 		//RecordPhoto가 빈 Record를 생성
-		Record tmpRecord = recordRepository.save(req.toInsertEntity(userData, spotData, count));
+		Record newRecord = recordRepository.save(req.toInsertEntity(userData, spotData, count));
 
 		// 요 부분 함수 분리하는거 생각
-		List<RecordPhoto> rpList = new ArrayList<RecordPhoto>();
+		List<RecordPhoto> rpList = new ArrayList<>();
 
 		for(MultipartFile image : images) {
-			ImageInfoDto tmpImage = photoService.saveFile(image, imageDir);
-			RecordPhoto tmpRP = recordPhotoRepository.save(
-					RecordPhoto.builder()
-							.record(tmpRecord)
-							.originalName(tmpImage.getOriginalName())
-							.savedName(tmpImage.getSavedName())
-							.savedPath(tmpImage.getSavedPath())
-							.photoOrder(images.indexOf(image) + 1)
-							.createdAt(new Date())
-							.deletedAt(null)
-							.build()
-			);
-			rpList.add(tmpRP);
+			RecordPhoto newRecordPhoto = insertRecordPhoto(newRecord, image, images.indexOf(image) + 1);
+			rpList.add(newRecordPhoto);
 		}
 
 		//사진 정보가 담긴 배열 넣고 아까 추가한 Record 업데이트
 		//여기서 바로 return 때리면 좀 곤란... 외부로 전달할 dto에 담아 전달하는게 나을듯 - RecordResponseDto
-		return recordRepository.save(req.toUpdateEntity(tmpRecord.getRecordId(), userData, spotData, count, rpList));
+		return recordRepository.save(req.toUpdateEntity(newRecord.getRecordId(), userData, spotData, count, rpList));
 	}
 
 	public Record updateRecord(SaveRecordRequestDto req, List<MultipartFile> images, String loginId) throws IOException {
 		User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(loginId).orElseThrow(() -> new BadRequestException(400, "ID 없음"));
-		Spot spotData = spotRepository.findBySpotIdAndDeletedAtIsNull(req.getSpotId()).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 spot입니다."));
 
 		Record recordData = recordRepository.findByRecordIdAndDeletedAtIsNull(req.getRecordId()).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 로그입니다."));
 
 		//파일 delete 처리 하는부분
 		for(RecordPhoto rp : recordData.getRecordPhotoList()) {
-			RecordPhoto tmpRP = recordPhotoRepository.save(
+			RecordPhoto deletedRecordPhoto = recordPhotoRepository.save(
 					RecordPhoto.builder()
 							.recordPhotoId(rp.getRecordPhotoId())
 							.record(rp.getRecord())
@@ -119,28 +107,40 @@ public class RecordService {
 			);
 		}
 
-		List<RecordPhoto> rpList = new ArrayList<RecordPhoto>();
+		List<RecordPhoto> rpList = new ArrayList<>();
 
 		for(MultipartFile image : images) {
-			ImageInfoDto tmpImage = photoService.saveFile(image, imageDir);
-			RecordPhoto tmpRP = recordPhotoRepository.save(
-					RecordPhoto.builder()
-						.record(recordData)
-						.originalName(tmpImage.getOriginalName())
-						.savedName(tmpImage.getSavedName())
-						.savedPath(tmpImage.getSavedPath())
-						.photoOrder(images.indexOf(image) + 1)
-						.createdAt(new Date())
-						.deletedAt(null)
-						.build()
-			);
-			rpList.add(tmpRP);
+			RecordPhoto newRecordPhoto = insertRecordPhoto(recordData, image, images.indexOf(image) + 1);
+			rpList.add(newRecordPhoto);
 		}
 
-		return recordRepository.save(req.toUpdateEntity(recordData.getRecordId(), userData, spotData, recordData.getLogNo(), rpList));
+		return recordRepository.save(req.toUpdateEntity(recordData.getRecordId(), userData, recordData.getSpot(), recordData.getLogNo(), rpList));
 	}
 
-	public int deleteRecord() {
+	public int deleteRecord(Long recordId, String loginId) {
+		Record recordData = recordRepository.findByRecordIdAndDeletedAtIsNull(recordId).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 로그입니다."));
+
+		if(!recordData.getUser().getLoginId().equals(loginId)) {
+			throw new BadRequestException(400, "삭제할 권한이 없는 로그입니다.");
+		}
+
+		recordRepository.delete(recordData);
+
 		return 0;
+	}
+
+	public RecordPhoto insertRecordPhoto(Record recordData, MultipartFile image, int order) throws IOException {
+		ImageInfoDto newImage = photoService.saveFile(image, imageDir);
+		return recordPhotoRepository.save(
+				RecordPhoto.builder()
+						   .record(recordData)
+						   .originalName(newImage.getOriginalName())
+						   .savedName(newImage.getSavedName())
+						   .savedPath(newImage.getSavedPath())
+						   .photoOrder(order)
+						   .createdAt(new Date())
+						   .deletedAt(null)
+						   .build()
+		);
 	}
 }

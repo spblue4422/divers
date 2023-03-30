@@ -5,6 +5,7 @@ import com.spblue4422.divers.common.entities.Nation;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql="UPDATE tb_spot SET deletedAt = now() where spotId = ?")
 @Entity(name="TB_Spot")
 public class Spot extends EntityDate {
     @Id()
@@ -19,7 +21,7 @@ public class Spot extends EntityDate {
     @Column(name="spotId")
     private Long spotId;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="spot_nation")
     private Nation nation;
 

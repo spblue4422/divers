@@ -5,11 +5,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.Date;
 
 @Getter
 @SuperBuilder
+//@Where(clause="deletedAt is null")
+@SQLDelete(sql = "UPDATE tb_user SET deletedAt = now() where userId = ?")
 @Entity(name="TB_User")
 @AllArgsConstructor
 @NoArgsConstructor

@@ -83,7 +83,9 @@ public class RecordController {
     @DeleteMapping("/remove")
     public BasicResponseDto removeRecord(Long recordId, String loginId) {
         try {
-            return BasicResponseDto.makeRes(null, 200, "success");
+            int status = recordService.deleteRecord(recordId, loginId);
+
+            return BasicResponseDto.makeRes(status, 200, "success");
         } catch(Exception ex) {
             return BasicResponseDto.makeRes(null, 500, ex.getMessage());
         }

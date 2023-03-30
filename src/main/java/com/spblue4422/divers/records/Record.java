@@ -3,12 +3,14 @@ package com.spblue4422.divers.records;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.spblue4422.divers.common.entities.EntityDate;
+import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
 import com.spblue4422.divers.spots.Spot;
 import com.spblue4422.divers.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE tb_record SET deletedAt = now() where recordId = ?")
 @Entity(name="TB_Record")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Record extends EntityDate {
@@ -25,11 +28,11 @@ public class Record extends EntityDate {
     @Column(name = "recordId")
     private Long recordId;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="record_user")
     private User user;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="record_spot")
     private Spot spot;
 
@@ -96,4 +99,24 @@ public class Record extends EntityDate {
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
     private List<RecordPhoto> recordPhotoList;
+
+    public SaveRecordRequestDto toSaveRecordRequestDto() {
+        return SaveRecordRequestDto.builder()
+                .recordId(recordId)
+                .spotId(spot.getSpotId())
+                .buddy(buddy)
+                .diveAt(diveAt)
+                .diveTime(diveTime)
+                .maxDepth(maxDepth)
+                .avgDepth(avgDepth)
+                .sTemperature(sTemperature)
+                .wTemperature(wTemperature)
+                .airDiveIn(airDiveIn)
+                .usedAir(usedAir)
+                .visibility(visibility)
+                .rating(rating)
+                .memo(memo)
+                .opened(opened)
+                .build();
+    }
 }

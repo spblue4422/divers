@@ -6,11 +6,13 @@ import com.spblue4422.divers.common.entities.Image;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
 
 @Getter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE tb_recordphoto SET deletedAt = now() where recordPhotoId = ?")
 @Entity(name="TB_RecordPhoto")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class RecordPhoto extends Image {
@@ -19,7 +21,7 @@ public class RecordPhoto extends Image {
 	@Column(name = "recordPhotoId")
 	private Long recordPhotoId;
 
-	@ManyToOne()
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="photo_record")
 	private Record record;
 
