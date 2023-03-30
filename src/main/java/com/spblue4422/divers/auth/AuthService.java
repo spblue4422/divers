@@ -58,11 +58,11 @@ public class AuthService {
         return userRepository.save(reqData.toEntity());
     }
 
-    public int deleteUser(Long id, String userId, String password) {
+    public int authModify() {
         return 0;
     }
 
-    public int updateUser() {
+    public int authWithdrawal(Long id, String userId, String password) {
         return 0;
     }
 }

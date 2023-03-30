@@ -18,8 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public class AddRecordRequestDto {
-    protected String loginId;
+public class SaveRecordRequestDto {
+    protected Long recordId;
     protected Long spotId;
     protected String buddy;
     protected Date diveAt;
@@ -35,7 +35,7 @@ public class AddRecordRequestDto {
     protected String memo;
     protected Boolean opened;
 
-    public Record toEntity(User userData, Spot spotData, int log) {
+    public Record toInsertEntity(User userData, Spot spotData, int log) {
         return Record.builder()
                 .user(userData)
                 .spot(spotData)

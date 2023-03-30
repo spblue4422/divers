@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name="TB_Record")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Record extends EntityDate {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -95,21 +96,4 @@ public class Record extends EntityDate {
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
     private List<RecordPhoto> recordPhotoList;
-
-
-//    public Record(Date at, int time, int maxD, int avgD, float sTemp, float wTemp, int airDiveIn, int usedAir, float vision, int rating, String memo) {
-//        super();
-//        this.diveAt = at;
-//        this.diveTime = time;
-//        this.maxDepth = maxD;
-//        this.avgDepth = avgD;
-//        this.sTemperature = sTemp;
-//        this.wTemperature = wTemp;
-//        this.airDiveIn = airDiveIn;
-//        this.usedAir = usedAir;
-//        this.visibility = vision;
-//        this.rating = rating;
-//        this.memo = memo;
-//        this.isOpened = false;
-//    }
 }

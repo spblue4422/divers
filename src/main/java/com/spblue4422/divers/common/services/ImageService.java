@@ -25,4 +25,8 @@ public class ImageService {
 				.savedPath(savedPath)
 				.build();
 	}
+
+	public void deleteFile(String savedUrl) {
+//		Boolean isDeleted =
+	}
 }

@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name="TB_RecordPhoto")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class RecordPhoto extends Image {
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +22,7 @@ public class RecordPhoto extends Image {
 	@ManyToOne()
 	@JoinColumn(name="photo_record")
 	private Record record;
+
+	@Column(name = "photoOrder")
+	private Integer photoOrder;
 }

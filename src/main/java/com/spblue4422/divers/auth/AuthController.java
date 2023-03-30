@@ -51,4 +51,22 @@ public class AuthController {
             return BasicResponseDto.makeRes(null, 500, ex.getMessage());
         }
     }
+
+    @PatchMapping("/modify")
+    public BasicResponseDto modify(String loginId) {
+        try {
+            return BasicResponseDto.makeRes(null, 200, "success");
+        } catch (Exception ex) {
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
+        }
+    }
+
+    @DeleteMapping("/withdrawal")
+    public BasicResponseDto withdrawal(String loginId) {
+        try {
+            return BasicResponseDto.makeRes(null, 200, "success");
+        } catch(Exception ex) {
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
+        }
+    }
 }

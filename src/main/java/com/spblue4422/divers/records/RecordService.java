@@ -3,8 +3,8 @@ package com.spblue4422.divers.records;
 import com.spblue4422.divers.common.errors.BadRequestException;
 import com.spblue4422.divers.common.services.ImageService;
 import com.spblue4422.divers.dto.ImageInfoDto;
-import com.spblue4422.divers.dto.records.AddRecordRequestDto;
-import com.spblue4422.divers.dto.records.RecordListItemResponseDto;
+import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
+import com.spblue4422.divers.dto.records.RecordListItemInfo;
 import com.spblue4422.divers.spots.Spot;
 import com.spblue4422.divers.spots.SpotRepository;
 import com.spblue4422.divers.users.User;
@@ -36,18 +36,22 @@ public class RecordService {
 		this.photoService = photoService;
 	}
 
-//	public List<RecordListItemResponseDto> getRecordInfoList() {
-//		return recordRepository.findAllRecords().orElseThrow(() -> new BadRequestException(400, "너는 null이니, 배열이니"));
-//	}
+	public List<RecordListItemInfo> getAllRecordInfoList() {
+		return recordRepository.findAllRecords().orElseThrow(() -> new BadRequestException(400, "너는 null이니, 배열이니"));
+	}
 
 	// 여기서 repository 함수를 두개 쓰지 말고, 배열까서 opened인 것만 남기는 방법도 있을듯?
-//	public List<RecordListItemResponseDto> getRecordInfoListByUser(String userId, Boolean myself) {
-//		if (myself) {return null;}
-////			return recordRepository.findMyRecords(userId).orElseThrow(() -> new BadRequestException(400,
-////					"잘못된 ID입니다."));
-//		else
-//			return recordRepository.findOthersRecords(userId).orElseThrow(() -> new BadRequestException(400, "잘못된 ID입니다."));
-//	}
+	public List<RecordListItemInfo> getRecordInfoListByUser(String userId, Boolean myself) {
+		List<RecordListItemInfo> list = recordRepository.findRecordsByLoginId(userId).orElseThrow(() -> new BadRequestException(400, "잘못된 ID입니다."));
+
+		if (myself) {
+			return list;
+		}
+		else {
+			list.removeIf((item) -> (!(item.getOpened())));
+			return recordRepository.findRecordsByLoginId(userId).orElseThrow(() -> new BadRequestException(400, "잘못된 ID입니다."));
+		}
+	}
 
 //	public Record getRecordInfo(Long id, String loginId, Boolean myself) {
 //		Record resData = recordRepository.findRecordDetail(id).orElseThrow(() -> new BadRequestException(400, "존재하지 않는 로그"));
@@ -59,15 +63,17 @@ public class RecordService {
 //		}
 //	}
 
-	public Record insertRecord(AddRecordRequestDto req, List<MultipartFile> images) throws IOException {
-		User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(req.getLoginId()).orElseThrow(() -> new BadRequestException(400, "ID 없음"));
+	//sTemeperature와 wTemperature가 들어가지 않는이유??? 디버그로 찍어보자.
+	public Record insertRecord(SaveRecordRequestDto req, List<MultipartFile> images, String loginId) throws IOException {
+		User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(loginId).orElseThrow(() -> new BadRequestException(400, "ID 없음"));
 		Spot spotData = spotRepository.findBySpotIdAndDeletedAtIsNull(req.getSpotId()).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 spot입니다."));
 
-		int count = recordRepository.findMyRecords(req.getLoginId()).orElseThrow(() -> new BadRequestException(400, "ID 없음")).size() + 1;
+		int count = recordRepository.findRecordsByLoginId(loginId).orElseThrow(() -> new BadRequestException(400, "ID 없음")).size() + 1;
 
 		//RecordPhoto가 빈 Record를 생성
-		Record tmpRecord = recordRepository.save(req.toEntity(userData, spotData, count));
+		Record tmpRecord = recordRepository.save(req.toInsertEntity(userData, spotData, count));
 
+		// 요 부분 함수 분리하는거 생각
 		List<RecordPhoto> rpList = new ArrayList<RecordPhoto>();
 
 		for(MultipartFile image : images) {
@@ -78,6 +84,7 @@ public class RecordService {
 							.originalName(tmpImage.getOriginalName())
 							.savedName(tmpImage.getSavedName())
 							.savedPath(tmpImage.getSavedPath())
+							.photoOrder(images.indexOf(image) + 1)
 							.createdAt(new Date())
 							.deletedAt(null)
 							.build()
@@ -86,11 +93,51 @@ public class RecordService {
 		}
 
 		//사진 정보가 담긴 배열 넣고 아까 추가한 Record 업데이트
+		//여기서 바로 return 때리면 좀 곤란... 외부로 전달할 dto에 담아 전달하는게 나을듯 - RecordResponseDto
 		return recordRepository.save(req.toUpdateEntity(tmpRecord.getRecordId(), userData, spotData, count, rpList));
 	}
 
-	public int updateRecord() {
-		return 0;
+	public Record updateRecord(SaveRecordRequestDto req, List<MultipartFile> images, String loginId) throws IOException {
+		User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(loginId).orElseThrow(() -> new BadRequestException(400, "ID 없음"));
+		Spot spotData = spotRepository.findBySpotIdAndDeletedAtIsNull(req.getSpotId()).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 spot입니다."));
+
+		Record recordData = recordRepository.findByRecordIdAndDeletedAtIsNull(req.getRecordId()).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 로그입니다."));
+
+		//파일 delete 처리 하는부분
+		for(RecordPhoto rp : recordData.getRecordPhotoList()) {
+			RecordPhoto tmpRP = recordPhotoRepository.save(
+					RecordPhoto.builder()
+							.recordPhotoId(rp.getRecordPhotoId())
+							.record(rp.getRecord())
+							.originalName(rp.getOriginalName())
+							.savedName(rp.getSavedName())
+							.savedPath(rp.getSavedPath())
+							.photoOrder(rp.getPhotoOrder())
+							.createdAt(rp.getCreatedAt())
+							.deletedAt(new Date())
+							.build()
+			);
+		}
+
+		List<RecordPhoto> rpList = new ArrayList<RecordPhoto>();
+
+		for(MultipartFile image : images) {
+			ImageInfoDto tmpImage = photoService.saveFile(image, imageDir);
+			RecordPhoto tmpRP = recordPhotoRepository.save(
+					RecordPhoto.builder()
+						.record(recordData)
+						.originalName(tmpImage.getOriginalName())
+						.savedName(tmpImage.getSavedName())
+						.savedPath(tmpImage.getSavedPath())
+						.photoOrder(images.indexOf(image) + 1)
+						.createdAt(new Date())
+						.deletedAt(null)
+						.build()
+			);
+			rpList.add(tmpRP);
+		}
+
+		return recordRepository.save(req.toUpdateEntity(recordData.getRecordId(), userData, spotData, recordData.getLogNo(), rpList));
 	}
 
 	public int deleteRecord() {

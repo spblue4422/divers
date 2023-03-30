@@ -1,13 +1,13 @@
 package com.spblue4422.divers.records;
 
 import com.spblue4422.divers.dto.BasicResponseDto;
-import com.spblue4422.divers.dto.records.AddRecordRequestDto;
-import com.spblue4422.divers.dto.records.RecordListItemResponseDto;
+import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
+import com.spblue4422.divers.dto.records.RecordListItemInfo;
+//import com.spblue4422.divers.dto.records.UpdateRecordRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,10 +20,21 @@ public class RecordController {
         this.recordService = recordService;
     }
 
-    @GetMapping("/my")
+    @GetMapping("/myList")
     public BasicResponseDto getMyAllRecords(String loginId) {
         try {
-            List<RecordListItemResponseDto> resData = null;//recordService.getRecordInfoListByUser(loginId, true);
+            List<RecordListItemInfo> resData = recordService.getRecordInfoListByUser(loginId, true);
+
+            return BasicResponseDto.makeRes(resData, 200, "success");
+        } catch(Exception ex) {
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
+        }
+    }
+
+    @GetMapping("/list")
+    public BasicResponseDto getAllRecords() {
+        try {
+            List<RecordListItemInfo> resData = recordService.getAllRecordInfoList();
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -34,7 +45,7 @@ public class RecordController {
     @GetMapping("/list/:loginId")
     public BasicResponseDto getOthersAllRecords(String loginId) {
         try {
-            List<RecordListItemResponseDto> resData = null;//recordService.getRecordInfoListByUser(loginId, false);
+            List<RecordListItemInfo> resData = recordService.getRecordInfoListByUser(loginId, false);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -48,11 +59,31 @@ public class RecordController {
     }
 
     @PostMapping("/add")
-    public BasicResponseDto addRecord(@RequestPart(value="recordData") AddRecordRequestDto req, @RequestPart(value="images") List<MultipartFile> images) {
+    public BasicResponseDto addRecord(@RequestPart(value="recordData") SaveRecordRequestDto req, @RequestPart(value="images") List<MultipartFile> images, @RequestPart(value="loginId") String loginId) {
         try {
-            Record resData = recordService.insertRecord(req, images);
+            Record resData = recordService.insertRecord(req, images, loginId);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
+        } catch(Exception ex) {
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
+        }
+    }
+
+    @PatchMapping("/modify")
+    public BasicResponseDto modifyRecord(@RequestPart(value="recordData")SaveRecordRequestDto req, @RequestPart(value="images") List<MultipartFile> images, @RequestPart(value="loginId") String loginId) {
+        try {
+            Record resData = recordService.updateRecord(req, images, loginId);
+
+            return BasicResponseDto.makeRes(resData, 200, "success");
+        } catch(Exception ex) {
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
+        }
+    }
+
+    @DeleteMapping("/remove")
+    public BasicResponseDto removeRecord(Long recordId, String loginId) {
+        try {
+            return BasicResponseDto.makeRes(null, 200, "success");
         } catch(Exception ex) {
             return BasicResponseDto.makeRes(null, 500, ex.getMessage());
         }
