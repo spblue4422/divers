@@ -19,7 +19,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE tb_record SET deletedAt = now() where recordId = ?")
+@SQLDelete(sql = "UPDATE tb_record SET deletedAt = now() where recordId = ? and deletedAt is null")
 @Entity(name="TB_Record")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Record extends EntityDate {
@@ -28,11 +28,11 @@ public class Record extends EntityDate {
     @Column(name = "recordId")
     private Long recordId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name="record_user")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name="record_spot")
     private Spot spot;
 
@@ -97,7 +97,7 @@ public class Record extends EntityDate {
     @Column(name="opened")
     private Boolean opened;
 
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "record", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<RecordPhoto> recordPhotoList;
 
     public SaveRecordRequestDto toSaveRecordRequestDto() {

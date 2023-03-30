@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @SuperBuilder
 //@Where(clause="deletedAt is null")
-@SQLDelete(sql = "UPDATE tb_user SET deletedAt = now() where userId = ?")
+@SQLDelete(sql = "UPDATE tb_user SET deletedAt = now() where userId = ? and deletedAt is null")
 @Entity(name="TB_User")
 @AllArgsConstructor
 @NoArgsConstructor

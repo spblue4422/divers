@@ -43,7 +43,7 @@ public class RecordController {
     }
 
     @GetMapping("/list/:loginId")
-    public BasicResponseDto getOthersAllRecords(String loginId) {
+    public BasicResponseDto getOthersAllRecords(@RequestParam("loginId") String loginId) {
         try {
             List<RecordListItemInfo> resData = recordService.getRecordInfoListByUser(loginId, false);
 
@@ -80,10 +80,10 @@ public class RecordController {
         }
     }
 
-    @DeleteMapping("/remove")
-    public BasicResponseDto removeRecord(Long recordId, String loginId) {
+    @DeleteMapping("/remove/{recordId}")
+    public BasicResponseDto removeRecord(@PathVariable("recordId") Long recordId) {
         try {
-            int status = recordService.deleteRecord(recordId, loginId);
+            int status = recordService.deleteRecord(recordId, "spblue4422");
 
             return BasicResponseDto.makeRes(status, 200, "success");
         } catch(Exception ex) {

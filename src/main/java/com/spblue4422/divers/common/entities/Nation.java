@@ -11,7 +11,7 @@ import lombok.*;
 @Entity(name = "TB_Nation")
 public class Nation {
     @Id()
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue()
     @Column(name = "nationId")
     private Long nationId;
 

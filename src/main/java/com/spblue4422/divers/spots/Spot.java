@@ -13,7 +13,7 @@ import java.util.Date;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql="UPDATE tb_spot SET deletedAt = now() where spotId = ?")
+@SQLDelete(sql="UPDATE tb_spot SET deletedAt = now() where spotId = ? and deletedAt is null")
 @Entity(name="TB_Spot")
 public class Spot extends EntityDate {
     @Id()
@@ -21,7 +21,7 @@ public class Spot extends EntityDate {
     @Column(name="spotId")
     private Long spotId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name="spot_nation")
     private Nation nation;
 

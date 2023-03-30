@@ -12,7 +12,7 @@ import org.hibernate.annotations.SQLDelete;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE tb_recordphoto SET deletedAt = now() where recordPhotoId = ?")
+@SQLDelete(sql = "UPDATE tb_recordphoto SET deletedAt = now() where recordPhotoId = ? and deletedAt is null")
 @Entity(name="TB_RecordPhoto")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class RecordPhoto extends Image {
@@ -21,7 +21,7 @@ public class RecordPhoto extends Image {
 	@Column(name = "recordPhotoId")
 	private Long recordPhotoId;
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne()
 	@JoinColumn(name="photo_record")
 	private Record record;
 
