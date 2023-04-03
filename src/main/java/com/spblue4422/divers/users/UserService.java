@@ -20,8 +20,7 @@ public class UserService {
     }
 
     public UserInfoBriefResponseDto getUserInfo(String loginId, String type) {
-        User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(loginId)
-                .orElseThrow(() -> new BadRequestException(400, "존재하지 않는 ID입니다."));
+        User userData = getUserDataByLoginId(loginId);
 
         if(type.equals("detail")) {
             return UserInfoDetailResponseDto.builder()
@@ -40,6 +39,10 @@ public class UserService {
         } else {
             throw new BadRequestException(400, "\"" + type + "\"" + "은 잘못된 type 요청입니다.");
         }
+    }
+
+    public User getUserDataByLoginId(String loginId) {
+        return userRepository.findUserByLoginIdAndDeletedAtIsNull(loginId).orElseThrow(() -> new BadRequestException(400, "존재하지 않는 ID입니다."));
     }
 
     //굳이 아래처럼 따로 method를 만들지 않아도 될듯?

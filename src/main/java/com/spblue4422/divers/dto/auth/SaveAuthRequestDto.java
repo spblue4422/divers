@@ -10,7 +10,7 @@ import java.util.Date;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequestDto extends LoginRequestDto {
+public class SaveAuthRequestDto extends LoginRequestDto {
 
     private String firstName;
 
@@ -18,14 +18,26 @@ public class RegisterRequestDto extends LoginRequestDto {
 
     private String nickName;
 
-    public User toEntity() {
+    public User toInsertEntity(String encodedPassword) {
         return User.builder()
                 .loginId(loginId)
-                .password(password)
+                .password(encodedPassword)
                 .firstName(firstName)
                 .lastName(lastName)
                 .nickName(nickName)
                 .createdAt(new Date())
+                .deletedAt(null)
+                .build();
+    }
+
+    public User toUpdateEntity(String encodedPassword, Date createdDate) {
+        return User.builder()
+                .loginId(loginId)
+                .password(encodedPassword)
+                .firstName(firstName)
+                .lastName(lastName)
+                .nickName(nickName)
+                .createdAt(createdDate)
                 .deletedAt(null)
                 .build();
     }

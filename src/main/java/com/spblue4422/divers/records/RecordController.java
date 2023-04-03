@@ -42,8 +42,8 @@ public class RecordController {
         }
     }
 
-    @GetMapping("/list/:loginId")
-    public BasicResponseDto getOthersAllRecords(@RequestParam("loginId") String loginId) {
+    @GetMapping("/list/{loginId}")
+    public BasicResponseDto getOthersAllRecords(@PathVariable("loginId") String loginId) {
         try {
             List<RecordListItemInfo> resData = recordService.getRecordInfoListByUser(loginId, false);
 
@@ -53,9 +53,15 @@ public class RecordController {
         }
     }
 
-    @GetMapping("/:recordId")
-    public int getRecordDetail() {
-        return 0;
+    @GetMapping("/{recordId}")
+    public BasicResponseDto getRecordDetail(@PathVariable("recordId") Long recordId) {
+        try {
+            Record resData = recordService.getRecordInfo(recordId, "spblue4422");
+
+            return BasicResponseDto.makeRes(resData, 200, "success");
+        } catch(Exception ex) {
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
+        }
     }
 
     @PostMapping("/add")

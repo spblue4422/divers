@@ -31,8 +31,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/info/:userId")
-    public BasicResponseDto getUserInfo(@RequestParam("loginId") String loginId) {
+    @GetMapping("/info/{loginId}")
+    public BasicResponseDto getUserInfo(@PathVariable("loginId") String loginId) {
         try {
             UserInfoBriefResponseDto userData = userService.getUserInfo(loginId, "brief");
 

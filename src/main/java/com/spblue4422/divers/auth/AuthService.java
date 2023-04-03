@@ -1,5 +1,6 @@
 package com.spblue4422.divers.auth;
 
+import com.spblue4422.divers.common.errors.BadRequestException;
 import com.spblue4422.divers.dto.auth.*;
 import com.spblue4422.divers.users.User;
 import com.spblue4422.divers.users.UserRepository;
@@ -46,20 +47,20 @@ public class AuthService {
         return userData;
     }
 
-    public User authRegister(RegisterRequestDto req) {
-        RegisterRequestDto reqData = RegisterRequestDto.builder()
-                .loginId(req.getLoginId())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .firstName(req.getFirstName())
-                .lastName(req.getLastName())
-                .nickName(req.getNickName())
-                .build();
+    public User authRegister(SaveAuthRequestDto req) {
+        String encodedPassword = passwordEncoder.encode(req.getPassword());
 
-        return userRepository.save(reqData.toEntity());
+        return userRepository.save(req.toInsertEntity(encodedPassword));
     }
 
-    public int authModify() {
-        return 0;
+    public User authModify(SaveAuthRequestDto req) {
+        User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(req.getLoginId()).orElseThrow(() -> new BadRequestException(400, "존재하지 않는 사용자입니다."));
+
+        if(!passwordEncoder.matches(req.getPassword(), userData.getPassword())) {
+            throw new BadRequestException(403, "비밀번호 틀림");
+        }
+
+        return userRepository.save(req.toUpdateEntity(userData.getPassword(), userData.getCreatedAt()));
     }
 
     public int authWithdrawal(Long id, String userId, String password) {

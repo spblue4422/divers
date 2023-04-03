@@ -1,4 +1,4 @@
-package com.spblue4422.divers.common.entities;
+package com.spblue4422.divers.nations;
 
 import jakarta.persistence.*;
 import lombok.*;

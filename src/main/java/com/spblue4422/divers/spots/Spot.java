@@ -1,13 +1,12 @@
 package com.spblue4422.divers.spots;
 
 import com.spblue4422.divers.common.entities.EntityDate;
-import com.spblue4422.divers.common.entities.Nation;
+import com.spblue4422.divers.nations.Nation;
+import com.spblue4422.divers.users.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
-
-import java.util.Date;
 
 @Getter
 @SuperBuilder
@@ -22,6 +21,10 @@ public class Spot extends EntityDate {
     private Long spotId;
 
     @ManyToOne()
+    @JoinColumn(name="spot_user")
+    private User user;
+
+    @ManyToOne()
     @JoinColumn(name="spot_nation")
     private Nation nation;
 
@@ -33,12 +36,4 @@ public class Spot extends EntityDate {
 
     @Column(name="explanation")
     private String explanation;
-
-    public Spot(String name, String location, String explanation) {
-        this.name = name;
-        this.location = location;
-        this.explanation = explanation;
-        this.createdAt = new Date();
-        this.deletedAt = null;
-    }
 }

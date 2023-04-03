@@ -53,15 +53,15 @@ public class RecordService {
 		}
 	}
 
-//	public Record getRecordInfo(Long id, String loginId, Boolean myself) {
-//		Record resData = recordRepository.findRecordDetail(id).orElseThrow(() -> new BadRequestException(400, "존재하지 않는 로그"));
-//
-//		if(resData.getOpened() || loginId.equals(resData.getUser().getLoginId())) {
-//			return resData;
-//		} else {
-//			throw new BadRequestException(403, "접근불가능한 로그입니다.");
-//		}
-//	}
+	public Record getRecordInfo(Long recordId, String loginId) {
+		Record resData = recordRepository.findByRecordIdAndDeletedAtIsNull(recordId).orElseThrow(() -> new BadRequestException(400, "존재하지 않는 로그"));
+
+		if(resData.getOpened() || loginId.equals(resData.getUser().getLoginId())) {
+			return resData;
+		} else {
+			throw new BadRequestException(403, "접근불가능한 로그입니다.");
+		}
+	}
 
 	//sTemeperature와 wTemperature가 들어가지 않는이유??? 디버그로 찍어보자.
 	public Record insertRecord(SaveRecordRequestDto req, List<MultipartFile> images, String loginId) throws IOException {

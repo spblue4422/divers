@@ -3,7 +3,6 @@ package com.spblue4422.divers.auth;
 import com.spblue4422.divers.dto.BasicResponseDto;
 import com.spblue4422.divers.dto.auth.*;
 import com.spblue4422.divers.users.User;
-import com.spblue4422.divers.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    //private final UserService userService;
 
     @Autowired
     public AuthController(AuthService authService) {
@@ -34,7 +32,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public BasicResponseDto register(@RequestBody RegisterRequestDto req) {
+    public BasicResponseDto register(@RequestBody SaveAuthRequestDto req) {
         try {
             if(authService.isLoginIdExist(req.getLoginId())) {
                 return BasicResponseDto.makeRes(null, 300, "ID 중복");
@@ -53,10 +51,22 @@ public class AuthController {
     }
 
     @PatchMapping("/modify")
-    public BasicResponseDto modify(String loginId) {
+    public BasicResponseDto modify(@RequestBody SaveAuthRequestDto req) {
         try {
-            return BasicResponseDto.makeRes(null, 200, "success");
+            User resData = authService.authModify(req);
+
+            return BasicResponseDto.makeRes(resData, 200, "success");
         } catch (Exception ex) {
+            return BasicResponseDto.makeRes(null, 500, ex.getMessage());
+        }
+    }
+
+    @PatchMapping("/changePassword")
+    public BasicResponseDto changePassword(@RequestBody LoginRequestDto req) {
+        try {
+
+            return BasicResponseDto.makeRes(null, 200, "success");
+        } catch(Exception ex) {
             return BasicResponseDto.makeRes(null, 500, ex.getMessage());
         }
     }
