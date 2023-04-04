@@ -3,7 +3,7 @@ package com.spblue4422.divers.spots;
 import com.spblue4422.divers.nations.Nation;
 import com.spblue4422.divers.common.errors.BadRequestException;
 import com.spblue4422.divers.dto.spots.SaveSpotRequestDto;
-import com.spblue4422.divers.dto.spots.SpotDataResponseDto;
+import com.spblue4422.divers.dto.spots.SpotResponseDto;
 import com.spblue4422.divers.nations.NationRepository;
 import com.spblue4422.divers.users.User;
 import com.spblue4422.divers.users.UserRepository;
@@ -31,34 +31,26 @@ public class SpotService {
 		return spotRepository.findAllByDeletedAtIsNull().orElseThrow(()-> new BadRequestException(400, "너는 null이냐 빈 배열이냐"));
 	}
 
-
-	public SpotDataResponseDto insertSpot(SaveSpotRequestDto req, String userId) {
+	//넣으려는 유저의 권한 검증만 있으면 될듯
+	public SpotResponseDto insertSpot(SaveSpotRequestDto req) {
 		Spot spotData = spotRepository.findByNameAndLocationAndDeletedAtIsNull(req.getSpotName(), req.getSpotLocation()).orElse(null);
 
 		if(spotData != null) {
 			throw new BadRequestException(400, "이미 존재하는 스팟입니다.");
 		}
 
-		User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(userId).orElseThrow(()-> new BadRequestException(400, "user없음"));
+		User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(req.getLoginId()).orElseThrow(()-> new BadRequestException(400, "user없음"));
 		Nation nationData = nationRepository.findById(req.getNationId()).orElseThrow(() -> new BadRequestException(400, "국가 없음"));
 
-		Spot newSpot = spotRepository.save(req.toInsertEntity(userData, nationData));
-
-		return SpotDataResponseDto.builder()
-				.spotId(newSpot.getSpotId())
-				.name(newSpot.getName())
-				.location(newSpot.getLocation())
-				.nation(newSpot.getNation().getName())
-				.explanation(newSpot.getExplanation())
-				.build();
+		return spotRepository.save(req.toInsertEntity(userData, nationData)).toSpotResponseDto();
 	}
 
 	/*
-	public Spot updateUser() {
+	public Spot updateSpot() {
 
 	}
 
-	public int deleteUser() {
+	public int deleteSpot() {
 
 	}
 	*/

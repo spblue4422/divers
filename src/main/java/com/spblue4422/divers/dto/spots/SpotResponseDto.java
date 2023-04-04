@@ -6,10 +6,14 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpotDataResponseDto {
+public class SpotResponseDto {
 	private Long spotId;
 	private String name;
 	private String location;
-	private String nation;
 	private String explanation;
+
+	//국가 정보
+	private Long nationId;
+	private String nationName;
+	private String nationCode;
 }

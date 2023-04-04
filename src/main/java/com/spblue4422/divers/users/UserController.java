@@ -19,8 +19,8 @@ public class UserController {
     }
 
     // 원래 같으면 userId를 패러미터로 받지않고 토큰으로 받아와야함.
-    @GetMapping("/my")
-    public BasicResponseDto getMyInfo(String loginId) {
+    @GetMapping("/my/{loginId}")
+    public BasicResponseDto getMyInfo(@PathVariable("loginId") String loginId) {
         try {
             //UserInfoDetailResponseDto userData = userService.getUserInfoDetail(userId);
             UserInfoBriefResponseDto userData = userService.getUserInfo(loginId, "detail");

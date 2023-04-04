@@ -1,6 +1,7 @@
 package com.spblue4422.divers.records;
 
 import com.spblue4422.divers.dto.BasicResponseDto;
+import com.spblue4422.divers.dto.records.RecordResponseDto;
 import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
 import com.spblue4422.divers.dto.records.RecordListItemInfo;
 //import com.spblue4422.divers.dto.records.UpdateRecordRequestDto;
@@ -56,7 +57,7 @@ public class RecordController {
     @GetMapping("/{recordId}")
     public BasicResponseDto getRecordDetail(@PathVariable("recordId") Long recordId) {
         try {
-            Record resData = recordService.getRecordInfo(recordId, "spblue4422");
+            RecordResponseDto resData = recordService.getRecordInfo(recordId, "spblue4422");
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -67,7 +68,7 @@ public class RecordController {
     @PostMapping("/add")
     public BasicResponseDto addRecord(@RequestPart(value="recordData") SaveRecordRequestDto req, @RequestPart(value="images") List<MultipartFile> images, @RequestPart(value="loginId") String loginId) {
         try {
-            Record resData = recordService.insertRecord(req, images, loginId);
+            RecordResponseDto resData = recordService.insertRecord(req, images, loginId);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -78,7 +79,7 @@ public class RecordController {
     @PatchMapping("/modify")
     public BasicResponseDto modifyRecord(@RequestPart(value="recordData")SaveRecordRequestDto req, @RequestPart(value="images") List<MultipartFile> images, @RequestPart(value="loginId") String loginId) {
         try {
-            Record resData = recordService.updateRecord(req, images, loginId);
+            RecordResponseDto resData = recordService.updateRecord(req, images, loginId);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
