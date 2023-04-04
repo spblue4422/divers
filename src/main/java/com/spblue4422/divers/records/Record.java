@@ -3,6 +3,8 @@ package com.spblue4422.divers.records;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.spblue4422.divers.common.entities.EntityDate;
+import com.spblue4422.divers.dto.records.RecordListResponseDto;
+import com.spblue4422.divers.dto.records.RecordPhotoResponseDto;
 import com.spblue4422.divers.dto.records.RecordResponseDto;
 import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
 import com.spblue4422.divers.spots.Spot;
@@ -104,7 +106,7 @@ public class Record extends EntityDate {
                 .build();
     }
 
-    public RecordResponseDto toRecordResponseDto() {
+    public RecordResponseDto toRecordResponseDto(List<RecordPhotoResponseDto> list) {
         return RecordResponseDto.builder()
                 .recordId(recordId)
                 .logNo(logNo)
@@ -121,6 +123,23 @@ public class Record extends EntityDate {
                 .rating(rating)
                 .memo(memo)
                 .opened(opened)
+                .userId(user.getUserId())
+                .loginId(user.getLoginId())
+                .nickName(user.getNickName())
+                .spotId(spot.getSpotId())
+                .spotName(spot.getName())
+                .location(spot.getLocation())
+                .recordPhotoList(list)
+                .build();
+    }
+
+    public RecordListResponseDto toRecordListResponseDto() {
+        return RecordListResponseDto.builder()
+                .recordId(recordId)
+                .logNo(logNo)
+                .diveAt(diveAt)
+                .opened(opened)
+                .createdAt(createdAt)
                 .userId(user.getUserId())
                 .loginId(user.getLoginId())
                 .nickName(user.getNickName())

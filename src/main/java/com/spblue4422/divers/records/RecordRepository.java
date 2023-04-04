@@ -10,14 +10,20 @@ import java.util.Optional;
 
 @Repository
 public interface RecordRepository extends JpaRepository<Record, Long> {
+	//@Query(value = "select * from tb_record r left join tb_user u on r.recor_user")
+	Optional<List<Record>> findAllByDeletedAtIsNull();
+
+	@Query(value="select r, u, s from TB_Record r left join TB_User u on r.user.userId = u.userId left join TB_Spot s on r.spot.spotId = s.spotId where u.loginId = :loginId and r.deletedAt is null")
+	Optional<List<Record>> findRecordsByLoginId(String loginId);
+
 	@Query(value = "select r.recordId as recordId, u.userId as userId, s.spotId as spotId, u.loginId as loginId, u.nickName as nickName, s.name as spotName, s.location as location, r.logNo as logNo, r.diveAt as diveAt, r.createdAt as createdAt, r.opened as opened"
 			+ " from tb_record r left join tb_user u on r.record_user = u.userId left join tb_spot s on r.record_spot = s.spotId where r.deletedAt is null", nativeQuery = true)
-	Optional<List<RecordListItemInfo>> findAllRecords();
+	Optional<List<RecordListItemInfo>> findAllRecords_proj();
 
 //	Class-based projections do not work with native queries AT ALL. As a workaround you may use named queries with ResultSetMapping or the Hibernate specific ResultTransformer.
 	@Query(value="select r.recordId as recordId, u.userId as userId, s.spotId as spotId, u.loginId as loginId, u.nickName as nickName, s.name as spotName, s.location as location, r.logNo as logNo, r.diveAt as diveAt, r.createdAt as createdAt, r.opened as opened"
 			+ " from tb_record r left join tb_user u on r.record_user = u.userId left join tb_spot s on r.record_spot = s.spotId where u.loginId=:loginId and r.deletedAt is null", nativeQuery = true)
-	Optional<List<RecordListItemInfo>> findRecordsByLoginId(String loginId);
+	Optional<List<RecordListItemInfo>> findRecordsByLoginId_proj(String loginId);
 
 //	@Query(value = "select *", nativeQuery = true)
 	Optional<Record> findByRecordIdAndDeletedAtIsNull(Long recordId);
