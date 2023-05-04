@@ -1,6 +1,7 @@
 package com.spblue4422.divers.spots;
 
 import com.spblue4422.divers.common.entities.EntityDate;
+import com.spblue4422.divers.dto.spots.SpotResponseDto;
 import com.spblue4422.divers.nations.Nation;
 import com.spblue4422.divers.users.User;
 import jakarta.persistence.*;
@@ -19,21 +20,27 @@ public class Spot extends EntityDate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="spotId")
     private Long spotId;
-
     @ManyToOne()
     @JoinColumn(name="spot_user")
     private User user;
-
     @ManyToOne()
     @JoinColumn(name="spot_nation")
     private Nation nation;
-
     @Column(name="name")
     private String name;
-
     @Column(name="location")
     private String location;
-
     @Column(name="explanation")
     private String explanation;
+
+    public SpotResponseDto toSpotResponseDto() {
+        return SpotResponseDto.builder()
+                .spotId(spotId)
+                .name(name)
+                .location(location)
+                .nationId(nation.getNationId())
+                .nationName(nation.getName())
+                .nationCode(nation.getNationCode())
+                .build();
+    }
 }

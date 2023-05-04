@@ -11,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 public class SaveSpotRequestDto {
 	private Long nationId;
+	private String loginId;
 	private String spotName;
 	private String spotLocation;
 	private String spotExplanation;

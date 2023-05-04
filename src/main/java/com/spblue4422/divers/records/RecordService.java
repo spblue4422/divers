@@ -3,9 +3,7 @@ package com.spblue4422.divers.records;
 import com.spblue4422.divers.common.errors.BadRequestException;
 import com.spblue4422.divers.common.services.ImageService;
 import com.spblue4422.divers.dto.ImageInfoDto;
-import com.spblue4422.divers.dto.records.RecordResponseDto;
-import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
-import com.spblue4422.divers.dto.records.RecordListItemInfo;
+import com.spblue4422.divers.dto.records.*;
 import com.spblue4422.divers.spots.Spot;
 import com.spblue4422.divers.spots.SpotRepository;
 import com.spblue4422.divers.users.User;
@@ -37,28 +35,45 @@ public class RecordService {
 		this.photoService = photoService;
 	}
 
-	public List<RecordListItemInfo> getAllRecordInfoList() {
-		return recordRepository.findAllRecords().orElseThrow(() -> new BadRequestException(400, "너는 null이니, 배열이니"));
+	public List<RecordListResponseDto> getAllRecordInfoList() {
+		//return recordRepository.findAllRecords().orElseThrow(() -> new BadRequestException(400, "너는 null이니, 배열이니"));
+		List<Record> recordDataList = recordRepository.findAllByDeletedAtIsNull().orElseThrow(() -> new BadRequestException(400, "너는 null이니, 배열이니"));
+		List<RecordListResponseDto> resDataList = new ArrayList<>();
+
+		for(Record recordData: recordDataList) {
+			resDataList.add(recordData.toRecordListResponseDto());
+		}
+
+		return resDataList;
 	}
 
 	// 여기서 repository 함수를 두개 쓰지 말고, 배열까서 opened인 것만 남기는 방법도 있을듯?
-	public List<RecordListItemInfo> getRecordInfoListByUser(String userId, Boolean myself) {
-		List<RecordListItemInfo> list = recordRepository.findRecordsByLoginId(userId).orElseThrow(() -> new BadRequestException(400, "잘못된 ID입니다."));
+	public List<RecordListResponseDto> getRecordInfoListByUser(String userId, Boolean myself) {
+		List<Record> recordDataList = recordRepository.findRecordsByLoginId(userId).orElseThrow(() -> new BadRequestException(400, "잘못된 ID입니다."));
+		List<RecordListResponseDto> resDataList = new ArrayList<>();
 
-		if (myself) {
-			return list;
+		for(Record recordData: recordDataList) {
+			resDataList.add(recordData.toRecordListResponseDto());
 		}
-		else {
-			list.removeIf((item) -> (!(item.getOpened())));
-			return recordRepository.findRecordsByLoginId(userId).orElseThrow(() -> new BadRequestException(400, "잘못된 ID입니다."));
+
+		if (!myself) {
+			resDataList.removeIf((data) -> (!(data.getOpened())));
 		}
+
+		return resDataList;
 	}
 
 	public RecordResponseDto getRecordInfo(Long recordId, String loginId) {
-		Record resData = recordRepository.findByRecordIdAndDeletedAtIsNull(recordId).orElseThrow(() -> new BadRequestException(400, "존재하지 않는 로그"));
+		Record recordData = recordRepository.findByRecordIdAndDeletedAtIsNull(recordId).orElseThrow(() -> new BadRequestException(400, "존재하지 않는 로그"));
 
-		if(resData.getOpened() || loginId.equals(resData.getUser().getLoginId())) {
-			return resData.toRecordResponseDto();
+		List<RecordPhotoResponseDto> photoResDataList = new ArrayList<>();
+
+		for(RecordPhoto rp: recordData.getRecordPhotoList()) {
+			photoResDataList.add(new RecordPhotoResponseDto(rp.getSavedPath(), rp.getPhotoOrder()));
+		}
+
+		if(recordData.getOpened() || loginId.equals(recordData.getUser().getLoginId())) {
+			return recordData.toRecordResponseDto(photoResDataList);
 		} else {
 			throw new BadRequestException(403, "접근불가능한 로그입니다.");
 		}
@@ -74,12 +89,13 @@ public class RecordService {
 		//RecordPhoto가 빈 Record를 생성
 		Record newRecord = recordRepository.save(req.toInsertEntity(userData, spotData, count));
 
-		// 요 부분 함수 분리하는거 생각
 		List<RecordPhoto> rpList = new ArrayList<>();
+		List<RecordPhotoResponseDto> photoResDataList = new ArrayList<>();
 
 		for(MultipartFile image : images) {
 			RecordPhoto newRecordPhoto = insertRecordPhoto(newRecord, image, images.indexOf(image) + 1);
 			rpList.add(newRecordPhoto);
+			photoResDataList.add(new RecordPhotoResponseDto(newRecordPhoto.getSavedPath(), newRecordPhoto.getPhotoOrder()));
 		}
 
 		//사진 정보가 담긴 배열 넣고 아까 추가한 Record 업데이트
@@ -111,10 +127,12 @@ public class RecordService {
 		}
 
 		List<RecordPhoto> rpList = new ArrayList<>();
+		List<RecordPhotoResponseDto> photoResDataList = new ArrayList<>();
 
 		for(MultipartFile image : images) {
 			RecordPhoto newRecordPhoto = insertRecordPhoto(recordData, image, images.indexOf(image) + 1);
 			rpList.add(newRecordPhoto);
+			photoResDataList.add(new RecordPhotoResponseDto(newRecordPhoto.getSavedPath(), newRecordPhoto.getPhotoOrder()));
 		}
 
 		Record retRecord = recordRepository.save(req.toUpdateEntity(recordData.getRecordId(), userData, recordData.getSpot(), recordData.getLogNo(), rpList));

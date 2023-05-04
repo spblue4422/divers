@@ -57,14 +57,4 @@ public class User extends EntityDate {
 
     @Column(name="refreshToken")
     private String refreshToken;
-
-    public User(String loginId, String password, String fName, String lName, String nickName) {
-        super();
-        this.loginId = loginId;
-        this.password = password;
-        this.firstName = fName;
-        this.lastName = lName;
-        this.nickName = nickName;
-        this.refreshToken = null;
-    }
 }

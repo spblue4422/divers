@@ -11,7 +11,7 @@ public interface RecordListItemInfo {
     Boolean getOpened();
     Date getCreatedAt();
     UserInfo getUser();
-    Spot getSpot();
+    SpotInfo getSpot();
 
     interface UserInfo {
         Long getUserId();

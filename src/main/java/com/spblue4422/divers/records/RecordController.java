@@ -1,6 +1,7 @@
 package com.spblue4422.divers.records;
 
 import com.spblue4422.divers.dto.BasicResponseDto;
+import com.spblue4422.divers.dto.records.RecordListResponseDto;
 import com.spblue4422.divers.dto.records.RecordResponseDto;
 import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
 import com.spblue4422.divers.dto.records.RecordListItemInfo;
@@ -24,7 +25,7 @@ public class RecordController {
     @GetMapping("/myList")
     public BasicResponseDto getMyAllRecords(String loginId) {
         try {
-            List<RecordListItemInfo> resData = recordService.getRecordInfoListByUser(loginId, true);
+            List<RecordListResponseDto> resData = recordService.getRecordInfoListByUser(loginId, true);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -35,7 +36,7 @@ public class RecordController {
     @GetMapping("/list")
     public BasicResponseDto getAllRecords() {
         try {
-            List<RecordListItemInfo> resData = recordService.getAllRecordInfoList();
+            List<RecordListResponseDto> resData = recordService.getAllRecordInfoList();
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {
@@ -46,7 +47,7 @@ public class RecordController {
     @GetMapping("/list/{loginId}")
     public BasicResponseDto getOthersAllRecords(@PathVariable("loginId") String loginId) {
         try {
-            List<RecordListItemInfo> resData = recordService.getRecordInfoListByUser(loginId, false);
+            List<RecordListResponseDto> resData = recordService.getRecordInfoListByUser(loginId, false);
 
             return BasicResponseDto.makeRes(resData, 200, "success");
         } catch(Exception ex) {

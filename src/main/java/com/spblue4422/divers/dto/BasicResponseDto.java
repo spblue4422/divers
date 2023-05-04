@@ -6,9 +6,7 @@ import lombok.*;
 @Builder
 public class BasicResponseDto {
     private Object data;
-
     private int statusCode;
-
     private String msg;
 
     public BasicResponseDto(Object data, int statusCode, String msg) {
