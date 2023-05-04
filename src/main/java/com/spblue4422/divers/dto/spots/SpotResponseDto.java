@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpotDataResponseDto {
+public class SpotResponseDto {
 	private Long spotId;
 	private String name;
 	private String location;

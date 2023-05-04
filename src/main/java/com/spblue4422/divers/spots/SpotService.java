@@ -3,7 +3,7 @@ package com.spblue4422.divers.spots;
 import com.spblue4422.divers.nations.Nation;
 import com.spblue4422.divers.common.errors.BadRequestException;
 import com.spblue4422.divers.dto.spots.SaveSpotRequestDto;
-import com.spblue4422.divers.dto.spots.SpotDataResponseDto;
+import com.spblue4422.divers.dto.spots.SpotResponseDto;
 import com.spblue4422.divers.nations.NationRepository;
 import com.spblue4422.divers.users.User;
 import com.spblue4422.divers.users.UserRepository;
@@ -32,7 +32,7 @@ public class SpotService {
 	}
 
 
-	public SpotDataResponseDto insertSpot(SaveSpotRequestDto req, String userId) {
+	public SpotResponseDto insertSpot(SaveSpotRequestDto req, String userId) {
 		Spot spotData = spotRepository.findByNameAndLocationAndDeletedAtIsNull(req.getSpotName(), req.getSpotLocation()).orElse(null);
 
 		if(spotData != null) {
@@ -44,7 +44,7 @@ public class SpotService {
 
 		Spot newSpot = spotRepository.save(req.toInsertEntity(userData, nationData));
 
-		return SpotDataResponseDto.builder()
+		return SpotResponseDto.builder()
 				.spotId(newSpot.getSpotId())
 				.name(newSpot.getName())
 				.location(newSpot.getLocation())
@@ -54,11 +54,11 @@ public class SpotService {
 	}
 
 	/*
-	public Spot updateUser() {
+	public Spot updateSpot() {
 
 	}
 
-	public int deleteUser() {
+	public int deleteSpot() {
 
 	}
 	*/

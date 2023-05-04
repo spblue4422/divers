@@ -3,6 +3,7 @@ package com.spblue4422.divers.records;
 import com.spblue4422.divers.common.errors.BadRequestException;
 import com.spblue4422.divers.common.services.ImageService;
 import com.spblue4422.divers.dto.ImageInfoDto;
+import com.spblue4422.divers.dto.records.RecordResponseDto;
 import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
 import com.spblue4422.divers.dto.records.RecordListItemInfo;
 import com.spblue4422.divers.spots.Spot;
@@ -53,18 +54,18 @@ public class RecordService {
 		}
 	}
 
-	public Record getRecordInfo(Long recordId, String loginId) {
+	public RecordResponseDto getRecordInfo(Long recordId, String loginId) {
 		Record resData = recordRepository.findByRecordIdAndDeletedAtIsNull(recordId).orElseThrow(() -> new BadRequestException(400, "존재하지 않는 로그"));
 
 		if(resData.getOpened() || loginId.equals(resData.getUser().getLoginId())) {
-			return resData;
+			return resData.toRecordResponseDto();
 		} else {
 			throw new BadRequestException(403, "접근불가능한 로그입니다.");
 		}
 	}
 
 	//sTemeperature와 wTemperature가 들어가지 않는이유??? 디버그로 찍어보자.
-	public Record insertRecord(SaveRecordRequestDto req, List<MultipartFile> images, String loginId) throws IOException {
+	public Long insertRecord(SaveRecordRequestDto req, List<MultipartFile> images, String loginId) throws IOException {
 		User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(loginId).orElseThrow(() -> new BadRequestException(400, "ID 없음"));
 		Spot spotData = spotRepository.findBySpotIdAndDeletedAtIsNull(req.getSpotId()).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 spot입니다."));
 
@@ -83,10 +84,12 @@ public class RecordService {
 
 		//사진 정보가 담긴 배열 넣고 아까 추가한 Record 업데이트
 		//여기서 바로 return 때리면 좀 곤란... 외부로 전달할 dto에 담아 전달하는게 나을듯 - RecordResponseDto
-		return recordRepository.save(req.toUpdateEntity(newRecord.getRecordId(), userData, spotData, count, rpList));
+		Record retRecord = recordRepository.save(req.toUpdateEntity(newRecord.getRecordId(), userData, spotData, count, rpList));
+
+		return retRecord.getRecordId();
 	}
 
-	public Record updateRecord(SaveRecordRequestDto req, List<MultipartFile> images, String loginId) throws IOException {
+	public Long updateRecord(SaveRecordRequestDto req, List<MultipartFile> images, String loginId) throws IOException {
 		User userData = userRepository.findUserByLoginIdAndDeletedAtIsNull(loginId).orElseThrow(() -> new BadRequestException(400, "ID 없음"));
 
 		Record recordData = recordRepository.findByRecordIdAndDeletedAtIsNull(req.getRecordId()).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 로그입니다."));
@@ -114,10 +117,12 @@ public class RecordService {
 			rpList.add(newRecordPhoto);
 		}
 
-		return recordRepository.save(req.toUpdateEntity(recordData.getRecordId(), userData, recordData.getSpot(), recordData.getLogNo(), rpList));
+		Record retRecord = recordRepository.save(req.toUpdateEntity(recordData.getRecordId(), userData, recordData.getSpot(), recordData.getLogNo(), rpList));
+
+		return retRecord.getRecordId();
 	}
 
-	public int deleteRecord(Long recordId, String loginId) {
+	public Long deleteRecord(Long recordId, String loginId) {
 		Record recordData = recordRepository.findByRecordIdAndDeletedAtIsNull(recordId).orElseThrow(()-> new BadRequestException(400, "존재하지 않는 로그입니다."));
 
 		if(!recordData.getUser().getLoginId().equals(loginId)) {
@@ -126,7 +131,7 @@ public class RecordService {
 
 		recordRepository.delete(recordData);
 
-		return 0;
+		return recordId;
 	}
 
 	public RecordPhoto insertRecordPhoto(Record recordData, MultipartFile image, int order) throws IOException {

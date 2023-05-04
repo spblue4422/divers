@@ -17,13 +17,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests()
-                .requestMatchers("/**").permitAll()
-                .and()
+        return httpSecurity
+                .httpBasic().disable()
                 .cors().disable()
                 .csrf().disable()
-                .formLogin().disable();
-
-        return httpSecurity.build();
+                .formLogin().disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/**").permitAll()
+                .and()
+                .addFilterBefore()
+                .build();
     }
 }

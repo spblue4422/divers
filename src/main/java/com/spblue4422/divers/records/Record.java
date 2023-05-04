@@ -3,6 +3,7 @@ package com.spblue4422.divers.records;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.spblue4422.divers.common.entities.EntityDate;
+import com.spblue4422.divers.dto.records.RecordResponseDto;
 import com.spblue4422.divers.dto.records.SaveRecordRequestDto;
 import com.spblue4422.divers.spots.Spot;
 import com.spblue4422.divers.users.User;
@@ -117,6 +118,30 @@ public class Record extends EntityDate {
                 .rating(rating)
                 .memo(memo)
                 .opened(opened)
+                .build();
+    }
+
+    public RecordResponseDto toRecordResponseDto() {
+        return RecordResponseDto.builder()
+                .recordId(recordId)
+                .logNo(logNo)
+                .buddy(buddy)
+                .diveAt(diveAt)
+                .diveTime(diveTime)
+                .maxDepth(maxDepth)
+                .avgDepth(avgDepth)
+                .sTemperature(sTemperature)
+                .wTemperature(wTemperature)
+                .airDiveIn(airDiveIn)
+                .usedAir(usedAir)
+                .visibility(visibility)
+                .rating(rating)
+                .memo(memo)
+                .opened(opened)
+                .userId(user.getUserId())
+                .nickName(user.getNickName())
+                .spotId(spot.getSpotId())
+                .spotName(spot.getName())
                 .build();
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
     private final UserService userService;
 
     @Autowired
@@ -22,7 +21,6 @@ public class UserController {
     @GetMapping("/my")
     public BasicResponseDto getMyInfo(String loginId) {
         try {
-            //UserInfoDetailResponseDto userData = userService.getUserInfoDetail(userId);
             UserInfoBriefResponseDto userData = userService.getUserInfo(loginId, "detail");
 
             return BasicResponseDto.makeRes(userData, 200, "success");

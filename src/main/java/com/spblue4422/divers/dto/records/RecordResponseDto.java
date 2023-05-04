@@ -28,12 +28,9 @@ public class RecordResponseDto {
 
 	//유저 정보
 	private Long userId;
-	private String loginId;
 	private String nickName;
 
 	//스팟 정보
 	private Long spotId;
 	private String spotName;
-	private String location;
-
 }
