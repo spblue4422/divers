@@ -9,15 +9,11 @@ import java.util.Date;
 @Getter
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 public class EntityDate {
     @Column(name="createdAt")
     protected Date createdAt;
 
     @Column(name="deletedAt")
     protected Date deletedAt;
-
-    public EntityDate() {
-        this.createdAt = new Date();
-        this.deletedAt = null;
-    }
 }
